@@ -1,8 +1,8 @@
 from django import urls
 from django.shortcuts import render
 from django.http import HttpResponse
-from rango.models import Category,Page
-from rango.forms import CategoryForm,UserForm, UserProfileForm,PageForm
+from rango.models import Author, Category,Book, Comment
+from rango.forms import CategoryForm,UserForm, UserProfileForm,BookForm
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
@@ -27,17 +27,16 @@ def visitor_cookie_handler(request):
     request.session['visits'] = visits
 
 def index(request):
-    
-    category_list = Category.objects.order_by('-likes')[:5]
-    page_list = Page.objects.order_by('-views')[:5]
+    # get all info for index page
+    category_list = Category.objects.all()
+    book_list = Book.objects.order_by('-views')[:5]
+    author_list = Author.objects.order_by('-views')[:5]
     context_dict = {}
-    context_dict['boldmessage'] = 'Crunchy, creamy, cookie, candy, cupcake!'
     context_dict['categories'] = category_list
-    context_dict['pages'] = page_list
-
-    visitor_cookie_handler(request)
-    response = render(request, 'rango/index.html', context=context_dict)
+    context_dict['books'] = book_list
+    context_dict['authors'] = author_list
     
+    response = render(request, 'rango/index.html', context=context_dict)
     return response
     #return render(request, 'rango/index.html', context=context_dict)
 
@@ -54,15 +53,15 @@ def show_category(request, category_name_slug):
     try:
         category = Category.objects.get(slug=category_name_slug)
         
-        pages = Page.objects.filter(category=category)
+        books = Book.objects.filter(category=category)
        
-        context_dict['pages'] = pages
+        context_dict['books'] = books
      
         context_dict['category'] = category
     except Category.DoesNotExist:
        
         context_dict['category'] = None
-        context_dict['pages'] = None
+        context_dict['books'] = None
    
     return render(request, 'rango/category.html', context=context_dict)
 
@@ -97,16 +96,16 @@ def add_page(request, category_name_slug):
     if category is None:
         return redirect(reverse('rango:index'))
 
-    form = PageForm()
+    form = BookForm()
     if request.method == 'POST':
-        form = PageForm(request.POST)
+        form = BookForm(request.POST)
 
         if form.is_valid():
             if category:
-                page = form.save(commit=False)
-                page.category = category
-                page.views = 0
-                page.save()
+                Book = form.save(commit=False)
+                Book.category = category
+                Book.views = 0
+                Book.save()
                 return redirect(reverse('rango:show_category', kwargs={'category_name_slug': category_name_slug}))
         else:
             print(form.errors)
@@ -169,3 +168,18 @@ def restricted(request):
 def user_logout(request):
     logout(request)
     return redirect(reverse('rango:index'))
+
+def show_book(request, book_name_slug):
+    context_dict = {}
+    try:
+        book = Book.objects.get(slug=book_name_slug)[0]
+        context_dict['book'] = book
+        try:
+            comments = Comment.objects.order_by("-date").get(book=book_name_slug)
+            context_dict['comments'] = comments
+        except Comment.DoesNotExist:
+            context_dict['comments'] = None
+    except Book.DoesNotExist:
+        context_dict['book'] = None
+   
+    return render(request, 'rango/book.html', context=context_dict)

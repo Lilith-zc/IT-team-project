@@ -6,47 +6,35 @@
 {% endblock %}  
 
 {% block body_block %}
-
-        <h1>Rango says...</h1>
-        <div>
-            {% if user.is_authenticated %}
-                howdy {{ user.username }}!
-                <p>Visits: {{ visits }}</p>
-            {% else %}
-                hey there partner!
-            {% endif %}
-        </div>
+ 
 
         <div>
-            {% if categories %}
-                <strong>Most Liked Categories</strong> 
-                <ul>
-                {% for category in categories %}
-                    <li>
-                        <a href="{% url 'rango:show_category' category.slug %}">{{ category.name }}</a>
-                    </li>
-                {% endfor %}
-                </ul>
-            {% else %}
-                <strong>There are no categories present.</strong>
-            {% endif %}
-        </div>
-
-        <div>
-        {% if pages %}
-            <strong>Most Liked Pages</strong> 
-            <ul>
-            {% for page in pages %}
-                <li>
-                    <a href="{{ page.url }}">{{ page.title }}</a>
-                </li>
+        {% if books %}
+            <strong>TOP 5 popular books</strong> 
+            {% for book in books %}
+            <img src="{{MEDIA_URL}}{{book.images}}" alt="{{book.title}}" />
+            <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+            <a href="{{  }}">{{ book.title }}</a>
+            <p>{{book.introduction}}</p>
+            <h5>{{book.author}}</h5>
+            <hr />
             {% endfor %}
-            </ul>
         {% else %}
-            <strong>There are no pages present.</strong>
+            <strong>There are no books present.</strong>
         {% endif %}
         </div>
 
+        <div>
+        {% if authors %}
+            <strong>TOP 5 popular authors</strong> 
+            {% for author in authors %}
+             <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+                <a href="{{  }}">{{ author.name }}</a>
+
+            {% endfor %}
+        
+        {% endif %}
+        </div>
 
         <div>
             <img src="{% static 'images/rango.jpg' %}" alt="Picture of Rango" />

@@ -2,7 +2,7 @@
 from django import forms
 from django.forms import fields, models
 from django.template.defaultfilters import title
-from rango.models import Page, Category, UserProfile
+from rango.models import Book, Category, UserProfile
 from django.contrib.auth.models import User
 
 class CategoryForm(forms.ModelForm):
@@ -15,13 +15,13 @@ class CategoryForm(forms.ModelForm):
         model = Category
         fields = ('name',)
 
-class PageForm(forms.ModelForm):
-    title = forms.CharField(max_length=Page.TITLE_MAX_LENGTH, help_text="Please enter the title of the page")
-    url = forms.URLField(max_length=Page.URL_MAX_LENGTH, help_text="Please enter the URL of the page.")
+class BookForm(forms.ModelForm):
+    title = forms.CharField(max_length=Book.TITLE_MAX_LENGTH, help_text="Please enter the title of the Book")
+    url = forms.URLField(max_length=Book.URL_MAX_LENGTH, help_text="Please enter the URL of the Book.")
     view = forms.IntegerField(widget=forms.HiddenInput(),initial=0)
 
     class Meta:
-        model = Page
+        model = Book
         exclude = ('category','views')
     
     def clean(self):
@@ -43,4 +43,4 @@ class UserProfileForm(forms.ModelForm):
     
     class Meta:
         model = UserProfile
-        fields = ('website', 'picture')
+        fields = ('picture',)
