@@ -14,23 +14,39 @@
     {% if book %}
     <h1>{{ book.title }}</h1>
     <img src="{{MEDIA_URL}}{{book.images}}" alt="{{book.title}}" />
-    <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+    <h2>{{ score_ave }}</h2>
     <p>{{book.introduction}}</p>
     <h5>{{book.author}}</h5>
+
         {% if user.is_authenticated %}
         <a href="{{ book.url }}">{{ book.title }}</a>
         {% else %}
         <h5>Please login to see the whole content of the book.</h5>
         {% endif %}
+
         {% if comments %}
         <ul>
             {% for comment in comments %}
-            <h4>{{ comment.user }}</h4>
-            <h5>{{ content.score }}</h5>
-            <h6>{{ comment.date }}</h6>
-            <p>{{ comment.content }}</p>
+                <h4>USER: {{ comment.user }}</h4>
+                <h5>SCORE: {{ comment.score }}</h5>
+                <h6>DATE: {{ comment.date }}</h6>
+                <p>CONTENT: {{ comment.content }}</p>
             {% endfor %}
         </ul>
+        {% else %}
+        <h5>There are no comments now.</h5>
+        {% endif %}
+
+        {% if user.is_authenticated %}
+            <form method="POST" action="{% url 'rango:add_comment' book.slug %}">
+                {% csrf_token %}
+                Score:<input type="number" name="score" min="1" max="5" /><br />
+                <input type="hidden" name="username" value="{{ user.username }}"/>
+                <textarea cols="30" rows="8" name="content" style="resize:none;" placeholder="Write your comment here."></textarea><br />
+                <input type="submit" value="summbit"/>
+            </form>
+        {% endif %}
+
     {% else %}
     <strong>The specified book does not exist!</strong><br />
     {% endif %}

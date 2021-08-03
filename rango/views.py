@@ -1,6 +1,8 @@
 from django import urls
+from django.contrib.auth.models import User
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.template.defaultfilters import title
 from rango.models import Author, Category,Book, Comment
 from rango.forms import CategoryForm,UserForm, UserProfileForm,BookForm
 from django.shortcuts import redirect
@@ -170,12 +172,22 @@ def user_logout(request):
     return redirect(reverse('rango:index'))
 
 def show_book(request, book_name_slug):
+    comment_num = 0
+    score_sum = 0
     context_dict = {}
     try:
-        book = Book.objects.get(slug=book_name_slug)[0]
+        book = Book.objects.get(slug=book_name_slug)
         context_dict['book'] = book
         try:
-            comments = Comment.objects.order_by("-date").get(book=book_name_slug)
+            comments = Comment.objects.filter(book=book).order_by('-date')
+            for comment in comments:
+                comment_num +=1
+                score_sum += int(comment.score)
+            if comment_num == 0:
+                context_dict['score_ave'] = 'No mark for now!'
+            else:
+                score_ave = score_sum/comment_num
+                context_dict['score_ave'] = str(score_ave)
             context_dict['comments'] = comments
         except Comment.DoesNotExist:
             context_dict['comments'] = None
@@ -183,3 +195,24 @@ def show_book(request, book_name_slug):
         context_dict['book'] = None
    
     return render(request, 'rango/book.html', context=context_dict)
+
+def add_comment(request, book_name_slug):
+
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        score = request.POST.get('score')
+        content = request.POST.get('content')
+
+        user = User.objects.get(username=username)
+        book = Book.objects.get(slug=book_name_slug)
+ 
+        comment = Comment.objects.get_or_create(user=user, book=book)[0]
+        if Comment.objects.get_or_create(user=user, book=book)[1]:
+            comment.score = score
+            comment.content = content
+            comment.save()
+        else:
+            pass
+    return redirect(reverse('rango:show_book', kwargs={'book_name_slug': book_name_slug}))
+
+

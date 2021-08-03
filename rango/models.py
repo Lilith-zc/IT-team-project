@@ -28,7 +28,7 @@ class Author(models.Model):
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
-        super(Category, self).save(*args, **kwargs)
+        super(Author, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.name
@@ -39,7 +39,7 @@ class Book(models.Model):
     
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     title = models.CharField(max_length=TITLE_MAX_LENGTH, unique=True)
-    author = models.ForeignKey(Author, on_delete=models.CASCADE)
+    author = models.ForeignKey(Author, on_delete=models.CASCADE, blank=True)
     url = models.URLField()
     image = models.ImageField(upload_to='book_images', blank=True)
     slug = models.SlugField(blank=True,unique=True)
@@ -47,7 +47,7 @@ class Book(models.Model):
     views = models.IntegerField(default=0)
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.name)
+        self.slug = slugify(self.title)
         super(Book, self).save(*args, **kwargs)
         
     def __str__(self):

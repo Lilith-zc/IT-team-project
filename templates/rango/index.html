@@ -7,14 +7,14 @@
 
 {% block body_block %}
  
-
+        <button type="button" class="btn btn-primary">Primary</button>
         <div>
         {% if books %}
             <strong>TOP 5 popular books</strong> 
             {% for book in books %}
             <img src="{{MEDIA_URL}}{{book.images}}" alt="{{book.title}}" />
             <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
-            <a href="{{  }}">{{ book.title }}</a>
+            <a href="{% url 'rango:show_book' book.slug %}">{{ book.title }}</a>
             <p>{{book.introduction}}</p>
             <h5>{{book.author}}</h5>
             <hr />
@@ -29,7 +29,7 @@
             <strong>TOP 5 popular authors</strong> 
             {% for author in authors %}
              <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
-                <a href="{{  }}">{{ author.name }}</a>
+                <a href="https://www.baidu.com">{{ author.name }}</a>
 
             {% endfor %}
         

@@ -1,8 +1,8 @@
 
 from django import forms
-from django.forms import fields, models
+from django.forms import fields, models, widgets
 from django.template.defaultfilters import title
-from rango.models import Book, Category, UserProfile
+from rango.models import Book, Category, Comment, UserProfile
 from django.contrib.auth.models import User
 
 class CategoryForm(forms.ModelForm):
@@ -40,7 +40,10 @@ class UserForm(forms.ModelForm):
         fields = ('username', 'email', 'password',)
 
 class UserProfileForm(forms.ModelForm):
+    gender =fields.CharField(
+        widget=widgets.RadioSelect(choices=[(1,"male"),(2,"female"),]),
+    )
     
     class Meta:
         model = UserProfile
-        fields = ('picture',)
+        fields = ('picture','gender','age',)
