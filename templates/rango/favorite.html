@@ -1,0 +1,28 @@
+{% extends 'rango/base.html' %}
+{% load staticfiles %}
+
+{% block title_block %}
+    My favorite books 
+{% endblock %}    
+
+{% block body_block %}
+    <h1>My favorite books</h1>
+
+    {% if books %}
+        <ul>
+        {% for book in books %}
+        <img src="{{MEDIA_URL}}{{book.images}}" alt="{{book.title}}" />
+        <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+        <a href="{% url 'rango:show_book' book.slug %}">{{ book.title }}</a>
+        <p>{{book.introduction}}</p>
+        <h5>{{book.author}}</h5>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <strong>No books in my favorite books.</strong><br />
+    {% endif %}
+
+
+{% endblock %}
+        
+    

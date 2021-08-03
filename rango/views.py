@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.template.defaultfilters import title
-from rango.models import Author, Category,Book, Comment
+from rango.models import Author, Category,Book, Comment, LikeList
 from rango.forms import CategoryForm,UserForm, UserProfileForm,BookForm
 from django.shortcuts import redirect
 from django.urls import reverse
@@ -215,4 +215,13 @@ def add_comment(request, book_name_slug):
             pass
     return redirect(reverse('rango:show_book', kwargs={'book_name_slug': book_name_slug}))
 
+def my_favorite(request, username):
+    context_dict = {}
+    user = User.objects.get(username=username)
+    datas = LikeList.objects.filter(user=user)
+    for data in datas:
+        context_dict['books'] = data.favoriteBook.all()
+        print("=======================")
+        print(data)
+    return render(request, 'rango/favorite.html', context=context_dict)
 

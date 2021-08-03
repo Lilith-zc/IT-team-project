@@ -73,7 +73,7 @@ class LikeList(models.Model):
     favoriteBook = models.ManyToManyField(Book)
 
     def __str__(self):
-        return self.user + " likes " + self.favoriteBook
+        return self.user.username + "'s favorite books."
 
 class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
