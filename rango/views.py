@@ -17,18 +17,15 @@ def get_server_side_cookie(request, cookie, default_val=None):
         val = default_val
     return val
 
-def visitor_cookie_handler(request):
-    visits = int(get_server_side_cookie(request, 'visits', '1'))
-    last_visit_cookie = get_server_side_cookie(request,'last_visit',str(datetime.now()))
-    last_visit_time = datetime.strptime(last_visit_cookie[:-7],'%Y-%m-%d %H:%M:%S')
-    if (datetime.now() - last_visit_time).days > 0:
-        visits = visits + 1
-        request.session['last_visit'] = str(datetime.now())
-    else:
-        request.session['last_visit'] = last_visit_cookie
-    request.session['visits'] = visits
+def visitor_cookie_handler(request,name):
+    #!!!新的！！！
+    username = str(get_server_side_cookie(request,'username',name))
+    #!!!新的！！！
+    request.session['username'] = username
 
 def index(request):
+    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+    print(str(request.session.get('username')))
     # get all info for index page
     category_list = Category.objects.all()
     book_list = Book.objects.order_by('-views')[:5]
@@ -152,6 +149,7 @@ def user_login(request):
         if user:
             if user.is_active:
                 login(request, user)
+                visitor_cookie_handler(request,username)
                 return redirect(reverse('rango:index'))
             else:
                 return HttpResponse("Your Rango account is disabled.")
@@ -171,7 +169,8 @@ def user_logout(request):
     logout(request)
     return redirect(reverse('rango:index'))
 
-def show_book(request, book_name_slug, username=' '):
+def show_book(request, book_name_slug):
+    username = request.session.get('username')
     comment_num = 0
     score_sum = 0
     context_dict = {}
@@ -194,7 +193,7 @@ def show_book(request, book_name_slug, username=' '):
     except Book.DoesNotExist:
         context_dict['book'] = None
 
-    if username != book_name_slug:
+    if username != None:
         user = User.objects.get(username=username)
         datas = LikeList.objects.filter(user=user)
         if datas.exists():
@@ -214,7 +213,7 @@ def show_book(request, book_name_slug, username=' '):
 def add_comment(request, book_name_slug):
 
     if request.method == 'POST':
-        username = request.POST.get('username')
+        username = request.session.get('username')
         score = request.POST.get('score')
         content = request.POST.get('content')
 
@@ -241,9 +240,8 @@ def my_favorite(request, username):
     return render(request, 'rango/favorite.html', context=context_dict)
 
 def add_favorite(request, book_name_slug):
-    context_dict = {}
     if request.method == 'POST':
-        username = request.POST.get('username')
+        username = request.session.get('username')
         user = User.objects.get(username=username)
         book = Book.objects.get(slug=book_name_slug)
         datas = LikeList.objects.filter(user=user)
@@ -253,12 +251,12 @@ def add_favorite(request, book_name_slug):
                 for every_book in books:
                     if every_book.title == book.title:
                         data.favoriteBook.remove(every_book)
-                        return redirect(reverse('rango:show_book', kwargs={'book_name_slug': book_name_slug, 'username' : username}))
+                        return redirect(reverse('rango:show_book', kwargs={'book_name_slug': book_name_slug}))
                 data.favoriteBook.add(book)
-                return redirect(reverse('rango:show_book', kwargs={'book_name_slug': book_name_slug, 'username' : username}))
+                return redirect(reverse('rango:show_book', kwargs={'book_name_slug': book_name_slug}))
         else:
             likelist = LikeList.objects.get_or_create(user=user)[0]
             likelist.save()
             likelist.favoriteBook.add(book)
 
-    return redirect(reverse('rango:show_book', kwargs={'book_name_slug': book_name_slug, 'username' : username}))
+    return redirect(reverse('rango:show_book', kwargs={'book_name_slug': book_name_slug}))
