@@ -20,5 +20,7 @@ urlpatterns = [
     path('operator/category/<slug:category_name_slug>/',views.operator_show_category, name='operator_show_category'),
     path('operator/delete_category/<slug:category_name_slug>/',views.operator_delete_category, name ='operator_delete_category'),
     path('operator/delete_book/<slug:book_name_slug>/',views.operator_delete_book, name ='operator_delete_book'),
+    path('admin/',views.admin_index,name='admin_index'),
+    path('admin/admin_delete_operator/<slug:operator_name>/',views.admin_delete_operator,name='admin_delete_operator')
 
 ]

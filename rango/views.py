@@ -186,6 +186,9 @@ def user_login(request):
                     return redirect(reverse('rango:index'))
                 elif userprofile.role == "OPERATOR":
                     return redirect(reverse('rango:operator_index'))
+                elif userprofile.role == "ADMIN":
+                    return redirect(reverse('rango:admin_index'))
+                
             else:
                 return HttpResponse("Your Rango account is disabled.")
         else:
@@ -343,4 +346,14 @@ def operator_delete_book(request,book_name_slug):
         category_name_slug = request.POST.get('category')
     
     return redirect(reverse('rango:operator_show_category', kwargs={'category_name_slug': category_name_slug}))
-    
+
+def admin_index(request):
+    context_dict = {}
+    operators = UserProfile.objects.filter(role='OPERATOR')
+    context_dict['operators'] = operators
+    return render(request, 'rango/admin_index.html', context=context_dict)
+
+def admin_delete_operator(request, operator_name):
+    operator = User.objects.get(username=operator_name)
+    operator.delete()
+    return redirect(reverse('rango:admin_index'))

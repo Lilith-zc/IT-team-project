@@ -1,0 +1,29 @@
+{% extends 'rango/operator_base.html' %}
+{% load staticfiles %}
+
+{% block title_block %}
+    Operator-Homepage
+{% endblock %}  
+
+{% block body_block %}
+
+        <h1>Admin index page.</h1>
+        {% if operators %}
+        <ul>
+            {% for operator in operators %}
+                <p>NAME: {{ operator.user.username }}</p>
+                <p><img src="{{MEDIA_URL}}{{operator.picture}}" alt="{{operator.user.username}}" /></p>
+                <p>age: {{  operator.age }}</p>
+                <p>gender: {{  operator.gender }}</p>
+   
+                <form method="POST" action="{% url 'rango:admin_delete_operator' operator.user.username %}">
+                    {% csrf_token %}
+                    <input type="submit" value="delete"/>
+                </form>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <h5>There are no comments now.</h5>
+        {% endif %}
+
+{% endblock %}
