@@ -171,7 +171,7 @@ def user_logout(request):
     logout(request)
     return redirect(reverse('rango:index'))
 
-def show_book(request, book_name_slug):
+def show_book(request, book_name_slug, username=' '):
     comment_num = 0
     score_sum = 0
     context_dict = {}
@@ -193,7 +193,22 @@ def show_book(request, book_name_slug):
             context_dict['comments'] = None
     except Book.DoesNotExist:
         context_dict['book'] = None
-   
+
+    if username != book_name_slug:
+        user = User.objects.get(username=username)
+        datas = LikeList.objects.filter(user=user)
+        if datas.exists():
+            for data in datas:
+                books = data.favoriteBook.all()
+                for every_book in books:
+                    if every_book.title == book.title:
+                        context_dict['button_style'] = 'Remove from my favorite'
+                        return render(request, 'rango/book.html', context=context_dict)
+                context_dict['button_style'] = 'Add to my favorite'
+                return render(request, 'rango/book.html', context=context_dict)
+        else:
+            context_dict['button_style'] = 'Add to my favorite'
+    
     return render(request, 'rango/book.html', context=context_dict)
 
 def add_comment(request, book_name_slug):
@@ -225,3 +240,25 @@ def my_favorite(request, username):
         print(data)
     return render(request, 'rango/favorite.html', context=context_dict)
 
+def add_favorite(request, book_name_slug):
+    context_dict = {}
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        user = User.objects.get(username=username)
+        book = Book.objects.get(slug=book_name_slug)
+        datas = LikeList.objects.filter(user=user)
+        if datas.exists():
+            for data in datas:
+                books = data.favoriteBook.all()
+                for every_book in books:
+                    if every_book.title == book.title:
+                        data.favoriteBook.remove(every_book)
+                        return redirect(reverse('rango:show_book', kwargs={'book_name_slug': book_name_slug, 'username' : username}))
+                data.favoriteBook.add(book)
+                return redirect(reverse('rango:show_book', kwargs={'book_name_slug': book_name_slug, 'username' : username}))
+        else:
+            likelist = LikeList.objects.get_or_create(user=user)[0]
+            likelist.save()
+            likelist.favoriteBook.add(book)
+
+    return redirect(reverse('rango:show_book', kwargs={'book_name_slug': book_name_slug, 'username' : username}))
