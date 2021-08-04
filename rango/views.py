@@ -358,3 +358,12 @@ def admin_delete_operator(request, operator_name):
     operator = User.objects.get(username=operator_name)
     operator.delete()
     return redirect(reverse('rango:admin_index'))
+
+def search(request):
+    title = request.GET['title']
+    recontents = Book.objects.filter(title__contains=title)
+
+    rejson = []
+    for recontent in recontents:
+        rejson.append(recontent.title)
+    return HttpResponse(json.dumps(rejson), content_type='application/json')
