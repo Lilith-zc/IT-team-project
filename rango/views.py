@@ -12,6 +12,7 @@ from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
+import json
 
 def get_server_side_cookie(request, cookie, default_val=None):
     val = request.session.get(cookie)
