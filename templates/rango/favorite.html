@@ -11,7 +11,7 @@
     {% if books %}
         <ul>
         {% for book in books %}
-        <img src="{{MEDIA_URL}}{{book.images}}" alt="{{book.title}}" />
+        <img src="{{MEDIA_URL}}{{book.image}}" alt="{{book.title}}" />
         <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
         <a href="{% url 'rango:show_book' book.slug %}">{{ book.title }}</a>
         <p>{{book.introduction}}</p>

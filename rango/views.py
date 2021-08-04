@@ -1,9 +1,11 @@
+from re import L
 from django import urls
+from django.contrib import auth
 from django.contrib.auth.models import User
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.template.defaultfilters import title
-from rango.models import Author, Category,Book, Comment, LikeList
+from rango.models import Author, Category,Book, Comment, LikeList, UserProfile
 from rango.forms import CategoryForm,UserForm, UserProfileForm,BookForm
 from django.shortcuts import redirect
 from django.urls import reverse
@@ -18,9 +20,8 @@ def get_server_side_cookie(request, cookie, default_val=None):
     return val
 
 def visitor_cookie_handler(request,name):
-    #!!!新的！！！
+    #!!!username cookie！！！
     username = str(get_server_side_cookie(request,'username',name))
-    #!!!新的！！！
     request.session['username'] = username
 
 def index(request):
@@ -76,7 +77,7 @@ def add_category(request):
             form.save(commit=True)
             # Now that the category is saved, we could confirm this.
             # For now, just redirect the user back to the index view.
-            return redirect(reverse('rango:index'))
+            return redirect(reverse('rango:operator_index'))
         else:
             # The supplied form contained errors -
             # just print them to the terminal.
@@ -86,30 +87,60 @@ def add_category(request):
     return render(request, 'rango/add_category.html', {'form': form})
 
 @login_required
-def add_page(request, category_name_slug):
+def add_book(request, category_name_slug):
     try:
         category = Category.objects.get(slug=category_name_slug)
+        
     except Category.DoesNotExist:
         category = None
 
     if category is None:
-        return redirect(reverse('rango:index'))
-
+        return redirect(reverse('rango:operator_index'))
+    
     form = BookForm()
     if request.method == 'POST':
         form = BookForm(request.POST)
+        author_name = request.POST.get('author_name')
+        author = Author.objects.get_or_create(name = author_name)[0]
+        author.save()
 
         if form.is_valid():
             if category:
-                Book = form.save(commit=False)
-                Book.category = category
-                Book.views = 0
-                Book.save()
-                return redirect(reverse('rango:show_category', kwargs={'category_name_slug': category_name_slug}))
+                book = form.save(commit=False)
+                book.category = category
+                book.views = 0
+                book.author = author
+                if 'image' in request.FILES:
+                    book.image = request.FILES['image']
+                book.save()
+                return redirect(reverse('rango:operator_show_category', kwargs={'category_name_slug': category_name_slug}))
         else:
             print(form.errors)
     context_dict = {'form':form, 'category': category}
-    return render(request, 'rango/add_page.html', context=context_dict)
+
+    '''
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        url = request.POST.get('url')
+        introduction = request.POST.get('introduction')
+        image = request.POST.get('image')
+        author_name = request.POST.get('author_name')
+        author = Author.objects.get_or_create(name = author_name)[0]
+        author.save()
+        print("==========================")
+        print(author.name)
+        book = Book.objects.get_or_create(title=title,category=category,author=author)[0]
+        book.url = url
+        book.image = image
+        book.introduction = introduction
+        book.save()
+        return redirect(reverse('rango:operator_show_category', kwargs={'category_name_slug': category_name_slug}))
+    
+
+    context_dict = {'category': category}
+    '''
+
+    return render(request, 'rango/add_book.html', context=context_dict)
 
 def register(request):
     registered = False
@@ -150,7 +181,11 @@ def user_login(request):
             if user.is_active:
                 login(request, user)
                 visitor_cookie_handler(request,username)
-                return redirect(reverse('rango:index'))
+                userprofile = UserProfile.objects.get(user=user)
+                if userprofile.role == "USER":
+                    return redirect(reverse('rango:index'))
+                elif userprofile.role == "OPERATOR":
+                    return redirect(reverse('rango:operator_index'))
             else:
                 return HttpResponse("Your Rango account is disabled.")
         else:
@@ -260,3 +295,52 @@ def add_favorite(request, book_name_slug):
             likelist.favoriteBook.add(book)
 
     return redirect(reverse('rango:show_book', kwargs={'book_name_slug': book_name_slug}))
+
+def operator_index(request):
+    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+    print(str(request.session.get('username')))
+    # get all info for index page
+    category_list = Category.objects.all()
+    context_dict = {}
+    context_dict['categories'] = category_list
+    
+    response = render(request, 'rango/operator_index.html', context=context_dict)
+    return response
+    #return render(request, 'rango/index.html', context=context_dict)
+
+def operator_show_category(request, category_name_slug):
+    context_dict = {}
+    try:
+        category = Category.objects.get(slug=category_name_slug)
+        
+        books = Book.objects.filter(category=category)
+       
+        context_dict['books'] = books
+     
+        context_dict['category'] = category
+    except Category.DoesNotExist:
+       
+        context_dict['category'] = None
+        context_dict['books'] = None
+   
+    return render(request, 'rango/operator_category.html', context=context_dict)
+
+
+def operator_delete_category(request,category_name_slug):
+    category = Category.objects.get(slug=category_name_slug)
+    category.delete()
+    category_list = Category.objects.all()
+    context_dict = {}
+    context_dict['categories'] = category_list
+    
+    response = render(request, 'rango/operator_index.html', context=context_dict)
+    return response
+
+def operator_delete_book(request,book_name_slug):
+    book = Book.objects.get(slug=book_name_slug)
+    book.delete()
+    if request.method == 'POST':
+        category_name_slug = request.POST.get('category')
+    
+    return redirect(reverse('rango:operator_show_category', kwargs={'category_name_slug': category_name_slug}))
+    

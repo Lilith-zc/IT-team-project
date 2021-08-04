@@ -1,0 +1,33 @@
+{% extends 'rango/operator_base.html' %}
+{% load staticfiles %}
+
+{% block title_block %}
+    Operator-Homepage
+{% endblock %}  
+
+{% block body_block %}
+
+        <h1>Operator index page.</h1>
+        <a href="{% url 'rango:add_category' %}">Add a New Category</a>
+        <form >
+            <input tyepe="submit" class="btn btn-primary" value= "{{ user.username }}" />
+        </form>
+        <div>
+        {% if categories %}
+            {% for c in categories %}
+                <li>
+                    <a href="{% url 'rango:operator_show_category' c.slug %}">{{ c.name }}</a>
+                    <form action="{% url 'rango:operator_delete_category' c.slug%}">
+                        <input type="submit" value="delete"/>
+                    </form>
+                </li>
+            {% endfor %}
+        {% else %}
+            <li>There are no categories present.</li> 
+        {% endif %}
+
+        <div>
+            <img src="{% static 'images/rango.jpg' %}" alt="Picture of Rango" />
+        </div>
+
+{% endblock %}

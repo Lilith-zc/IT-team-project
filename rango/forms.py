@@ -2,7 +2,7 @@
 from django import forms
 from django.forms import fields, models, widgets
 from django.template.defaultfilters import title
-from rango.models import Book, Category, Comment, UserProfile
+from rango.models import Author, Book, Category, Comment, UserProfile
 from django.contrib.auth.models import User
 
 class CategoryForm(forms.ModelForm):
@@ -17,12 +17,12 @@ class CategoryForm(forms.ModelForm):
 
 class BookForm(forms.ModelForm):
     title = forms.CharField(max_length=Book.TITLE_MAX_LENGTH, help_text="Please enter the title of the Book")
-    url = forms.URLField(max_length=Book.URL_MAX_LENGTH, help_text="Please enter the URL of the Book.")
-    view = forms.IntegerField(widget=forms.HiddenInput(),initial=0)
+    url = forms.CharField(max_length=Book.URL_MAX_LENGTH, help_text="Please enter the URL of the Book.")
+    introduction = forms.CharField(max_length=Book.INTRODUCTION_MAX_LENGTH, help_text="Please enter the introduction of the Book.")
 
     class Meta:
         model = Book
-        exclude = ('category','views')
+        fields = ('image','title','url','introduction')
     
     def clean(self):
         cleaned_data = self.cleaned_data
@@ -33,7 +33,7 @@ class BookForm(forms.ModelForm):
         return cleaned_data
     
 class UserForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput())
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'class':'form-control'}))
 
     class Meta:
         model = User
@@ -41,7 +41,7 @@ class UserForm(forms.ModelForm):
 
 class UserProfileForm(forms.ModelForm):
     gender =fields.CharField(
-        widget=widgets.RadioSelect(choices=[(1,"male"),(2,"female"),]),
+        widget=widgets.RadioSelect(choices=[("male","male"),("female","female"),]),
     )
     
     class Meta:
