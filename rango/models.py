@@ -84,12 +84,3 @@ class Comment(models.Model):
 
     def __str__(self):
         return self.content
-
-class History(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    browsedBook = models.ManyToManyField(Book)
-    date = models.DateTimeField(default = datetime.now())
-
-    def __str__(self):
-        return self.user + " browsed " + self.browsedBook
-

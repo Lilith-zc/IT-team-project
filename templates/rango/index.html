@@ -8,9 +8,6 @@
 {% block body_block %}
 
 
-        <form >
-            <input tyepe="submit" class="btn btn-primary" value= "{{ user.username }}" />
-        </form>
         <div>
         {% if books %}
             <strong>TOP 5 popular books</strong> 
@@ -38,10 +35,6 @@
             {% endfor %}
         
         {% endif %}
-        </div>
-
-        <div>
-            <img src="{% static 'images/rango.jpg' %}" alt="Picture of Rango" />
         </div>
 
 {% endblock %}

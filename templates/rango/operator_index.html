@@ -9,9 +9,6 @@
 
         <h1>Operator index page.</h1>
         <a href="{% url 'rango:add_category' %}">Add a New Category</a>
-        <form >
-            <input tyepe="submit" class="btn btn-primary" value= "{{ user.username }}" />
-        </form>
         <div>
         {% if categories %}
             {% for c in categories %}
@@ -26,8 +23,5 @@
             <li>There are no categories present.</li> 
         {% endif %}
 
-        <div>
-            <img src="{% static 'images/rango.jpg' %}" alt="Picture of Rango" />
-        </div>
 
 {% endblock %}

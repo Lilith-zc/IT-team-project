@@ -12,6 +12,7 @@
         </title>
         <script src="http://apps.bdimg.com/libs/jquery/1.11.1/jquery.min.js"></script>
         <script src="{% static 'javascript/base.js' %}"></script>
+        <link rel="stylesheet" href="{% static 'css/base.css' %}" type="text/css">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     </head>
     <body>
@@ -21,7 +22,6 @@
             {% if user.is_authenticated %}
         <!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
             <a href="{% url 'rango:my_favorite' user.username %}">Favorite Books</a>
-            <a href="">History</a>
             {% endif %}
         </div>
 
@@ -39,9 +39,10 @@
         <div>
             <form id="search_form" method="get" action="{% url 'rango:search' %}">
                 {% csrf_token %}
-                Title Name: <input type="text" id="search-text" name="title" placeholder="book title" size="50" onkeyup="add_value()" />
+                Title Name: <input type="text" id="search-text" name="title" placeholder="book title" size="50" />
                 <input type="submit" value="search" name = "search"/>
             </form>
+            <!--此处有内联css-->
             <div id='search-list' style="z-index: 2; left: 85px; top: 80px; position: absolute; background-color: #fff;">
                 <p><span id='search-result'></span></p>
             </div>
