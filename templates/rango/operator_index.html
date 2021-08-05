@@ -1,5 +1,5 @@
 {% extends 'rango/operator_base.html' %}
-{% load staticfiles %}
+{% load staticfile %}
 
 {% block title_block %}
     Operator-Homepage
@@ -7,21 +7,28 @@
 
 {% block body_block %}
 
-        <h1>Operator index page.</h1>
-        <a href="{% url 'rango:add_category' %}">Add a New Category</a>
-        <div>
-        {% if categories %}
-            {% for c in categories %}
-                <li>
-                    <a href="{% url 'rango:operator_show_category' c.slug %}">{{ c.name }}</a>
-                    <form action="{% url 'rango:operator_delete_category' c.slug%}">
-                        <input type="submit" value="delete"/>
-                    </form>
-                </li>
-            {% endfor %}
-        {% else %}
-            <li>There are no categories present.</li> 
-        {% endif %}
-
+        <h1>Manage Category</h1>
+        <div class="card p-2">
+            {% if categories %}
+            <table class="table table-hover table-borderless">
+                <tbody>
+                    {% for c in categories %}
+                    <tr>
+                        <th scope="row">{{forloop.counter}}</th>
+                        <td><a href="{% url 'rango:operator_show_category' c.slug %}">{{ c.name }}</a></td>
+                        <td>
+                            <form action="{% url 'rango:operator_delete_category' c.slug%}">
+                                <input type="submit" value="Delete" class="btn btn-outline-primary"/>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+                <li>There are no categories present.</li>
+            {% endif %}
+            <a href="{% url 'rango:add_category' %}" type="button" class="btn btn-primary">Add a New Category</a>
+        </div>
 
 {% endblock %}

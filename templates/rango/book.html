@@ -1,5 +1,5 @@
 {% extends 'rango/base.html' %}
-{% load staticfiles %}
+{% load staticfile %}
 
 {% block title_block %}
     {% if book %}
@@ -11,44 +11,78 @@
 
 {% block body_block %}
     {% if book %}
-    <h1>{{ book.title }}</h1>
-    <img src="{{MEDIA_URL}}{{book.image}}" alt="{{book.title}}" />
-    <h2>{{ score_ave }}</h2>
-    <h2>views: {{ book.views }}</h2>
-    <p>{{book.introduction}}</p>
-    <h5>{{book.author}}</h5>
+        <div class="card mt-3" style="height: 220px; box-shadow: 7px 7px 11px -4px lightgrey;">
+            <div class="row">
+                <div class="col-2">
+                    <img src="{{MEDIA_URL}}{{book.image}}" alt="{{book.title}}" style="height:170px; width: 100px; object-fit: contain; margin: 25px;"/>
+                </div>
+                <div class="col-10 p-4">
+                    {% if user.is_authenticated %}
+                    <form method="POST" action="{% url 'rango:add_favorite' book.slug %}" class="text_end">
+                        {% csrf_token %}
+                        <input style="float: right;" type="submit" value="{{button_style}}"/>
+                    </form>
+                    {% else %}
+                    <h5>Please login to see the whole content of the book.</h5>
+                    {% endif %}
+                    <div><h2 style="display:inline;">{{ book.title }}</h2><p class="ml-2" style="display:inline; color: grey;">(score: {{ score_ave }})</p></div>
+                    <h3 style="color: rgb(80,80,80);">{{book.author}}</h3>
+                    <p style="color: grey;">{{book.introduction}}</p>
+                    {% if user.is_authenticated %}
+                    <a type="button" class="btn btn-primary" href="{{ book.url }}">Link to the Book</a>
+                    {% endif %}
+                    <p class="text-end">Views: {{ book.views }}</p>
+                </div>
+            </div>
+        </div>
 
-        {% if user.is_authenticated %}
-        <a href="{{ book.url }}">{{ book.title }}</a>
-        <form method="POST" action="{% url 'rango:add_favorite' book.slug %}">
-            {% csrf_token %}
-            <input type="submit" value="{{button_style}}"/>
-        </form>
-        {% else %}
-        <h5>Please login to see the whole content of the book.</h5>
-        {% endif %}
+        <div class="card mt-3" style="height: 500px; box-shadow: 0px 0px 9px 1px lightgrey inset; overflow: auto;">
+                {% if comments %}
+                    {% for comment in comments %}
+                        <div class="card mt-2 p-3">
+                            <h4>User: {{ comment.user }}</h4>
+                            <p>Score: {{ comment.score }}</p>
+                            <h5>Comment: {{ comment.content }}</h5>
+                            <h6>Date: {{ comment.date }}</h6>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                <h5>There are no comments now.</h5>
+                {% endif %}
+        </div>
 
-        {% if comments %}
-        <ul>
-            {% for comment in comments %}
-                <h4>USER: {{ comment.user }}</h4>
-                <h5>SCORE: {{ comment.score }}</h5>
-                <h6>DATE: {{ comment.date }}</h6>
-                <p>CONTENT: {{ comment.content }}</p>
-            {% endfor %}
-        </ul>
-        {% else %}
-        <h5>There are no comments now.</h5>
-        {% endif %}
-
-        {% if user.is_authenticated %}
+        <div class="card mt-3 p-5 mb-5">
+            {% if user.is_authenticated %}
             <form method="POST" action="{% url 'rango:add_comment' book.slug %}">
                 {% csrf_token %}
-                Score:<input type="number" name="score" min="1" max="5" /><br />
-                <textarea cols="30" rows="8" name="content" style="resize:none;" placeholder="Write your comment here."></textarea><br />
-                <input type="submit" value="summbit"/>
+                <div class="mb-3">
+                    <label class="form-label">Score:</label>
+                    <div class="btn-group ml-3" role="group" aria-label="Basic radio toggle button group">
+                        <input type="radio" class="btn-check" name="btnradio" id="btnradio1" value="1" autocomplete="off" checked>
+                        <label class="btn btn-outline-primary" for="btnradio1">1</label>
+
+                        <input type="radio" class="btn-check" name="btnradio" id="btnradio2" value="2" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="btnradio2">2</label>
+
+                        <input type="radio" class="btn-check" name="btnradio" id="btnradio3" value="3" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="btnradio3">3</label>
+
+                        <input type="radio" class="btn-check" name="btnradio" id="btnradio4" value="4" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="btnradio4">4</label>
+
+                        <input type="radio" class="btn-check" name="btnradio" id="btnradio5" value="5" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="btnradio5">5</label>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Comment:</label>
+                    <textarea class="form-control" name="content" placeholder="Write your comment here."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
             </form>
-        {% endif %}
+            {% endif %}
+        </div>
+
 
     {% else %}
     <strong>The specified book does not exist!</strong><br />

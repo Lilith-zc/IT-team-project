@@ -1,19 +1,13 @@
-<ul> 
-    {% if authors %}
-        {% for a in authors %}
-            {% if a == current_author %}
-                <li> 
-                    <strong>
-                        <a href="{% url 'rango:show_author_books' a.name %}">{{ a.name }}</a>
-                    </strong>
-                </li>
-            {% else %}
-                <li>
-                    <a href="{% url 'rango:show_author_books' a.name %}">{{ a.name }}</a>
-                </li>
-            {% endif %}
-        {% endfor %}
-    {% else %}
-        <li><strong>There are no authors present.</strong></li> 
-    {% endif %}
-</ul>
+{% if authors %}
+    <div class="btn-group mt-2" role="group" aria-label="Basic outlined example">
+    {% for a in authors %}
+        {% if a == current_author %}
+        <a type="button" class="btn btn-outline-primary active" href="{% url 'rango:show_author_books' a.name %}">{{ a.name }}</a>
+        {% else %}
+            <a type="button" class="btn btn-outline-primary" href="{% url 'rango:show_author_books' a.name %}">{{ a.name }}</a>
+        {% endif %}
+    {% endfor %}
+    </div>
+{% else %}
+    <h5>There are no authors present.</h5>
+{% endif %}

@@ -264,12 +264,10 @@ def add_comment(request, book_name_slug):
         book = Book.objects.get(slug=book_name_slug)
  
         comment = Comment.objects.get_or_create(user=user, book=book)[0]
-        if Comment.objects.get_or_create(user=user, book=book)[1]:
-            comment.score = score
-            comment.content = content
-            comment.save()
-        else:
-            pass
+        comment.score = score
+        comment.content = content
+        comment.save()
+
     return redirect(reverse('rango:show_book', kwargs={'book_name_slug': book_name_slug}))
 
 def my_favorite(request, username):

@@ -1,19 +1,13 @@
-<ul> 
-    {% if categories %}
-        {% for c in categories %}
-            {% if c == current_category %}
-                <li> 
-                    <strong>
-                        <a href="{% url 'rango:show_category' c.slug %}">{{ c.name }}</a>
-                    </strong>
-                </li>
-            {% else %}
-                <li>
-                    <a href="{% url 'rango:show_category' c.slug %}">{{ c.name }}</a>
-                </li>
-            {% endif %}
-        {% endfor %}
-    {% else %}
-        <li><strong>There are no categories present.</strong></li> 
-    {% endif %}
-</ul>
+{% if categories %}
+    <div class="btn-group mt-2" role="group" aria-label="Basic outlined example">
+    {% for c in categories %}
+        {% if c == current_category %}
+        <a type="button" class="btn btn-outline-primary active" href="{% url 'rango:show_category' c.slug %}">{{ c.name }}</a>
+        {% else %}
+            <a type="button" class="btn btn-outline-primary" href="{% url 'rango:show_category' c.slug %}">{{ c.name }}</a>
+        {% endif %}
+    {% endfor %}
+    </div>
+{% else %}
+    <h5>There are no categories present.</h5>
+{% endif %}

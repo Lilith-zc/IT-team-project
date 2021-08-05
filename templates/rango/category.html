@@ -1,5 +1,5 @@
 {% extends 'rango/base.html' %}
-{% load staticfiles %}
+{% load staticfile %}
 
 {% block title_block %}
     {% if category %}
@@ -10,26 +10,30 @@
 {% endblock %}    
 
 {% block body_block %}
-
     {% if category %}
-        <h1>{{ category.name }}</h1>
+        <h2>{{ category.name }}</h2>
         {% if books %}
-            <ul>
             {% for book in books %}
-            <img src="{{MEDIA_URL}}{{book.image}}" alt="{{book.title}}" />
-            <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
-            <a href="{% url 'rango:show_book' book.slug %}">{{ book.title }}</a>
-            <p>{{book.introduction}}</p>
-            <h5>{{book.author}}</h5>
+            <div class="card mt-3" style="height: 200px; box-shadow: 7px 7px 11px -4px lightgrey;" onmouseover="this.style.backgroundColor = 'rgb(240,240,240)'" onmouseout="this.style.backgroundColor = 'white'">
+                <div class="row">
+                    <div class="col-2">
+                        <img src="{{MEDIA_URL}}{{book.image}}" alt="{{book.title}}" style="height:170px; width: 100px; object-fit: contain; margin: 15px;"/>
+                    </div>
+                    <div class="col-10 p-4">
+                        <h3>{{ book.title }}</h3>
+                        <h5 style="color: grey;">{{book.author}}</h5>
+                        <p style="color: lightgrey;">{{book.introduction}}</p>
+                        <a type="button" class="btn btn-primary" href="{% url 'rango:show_book' book.slug %}">Detail</a>
+                    </div>
+                </div>
+            </div>
             {% endfor %}
-            </ul>
         {% else %}
             <strong>No pages currently in category.</strong><br />
         {% endif %}
     {% else %}
         The specified category does not exist!
     {% endif %}
-
 {% endblock %}
         
         

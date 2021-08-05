@@ -1,40 +1,48 @@
 {% extends 'rango/base.html' %}
-{% load staticfiles %}
+{% load staticfile %}
 
 {% block title_block %}
     Homepage
 {% endblock %}  
 
 {% block body_block %}
-
-
-        <div>
-        {% if books %}
-            <strong>TOP 5 popular books</strong> 
-            {% for book in books %}
-            <img src="{{MEDIA_URL}}{{book.image}}" alt="{{book.title}}" />
-            <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
-            <a href="{% url 'rango:show_book' book.slug %}">{{ book.title }}</a>
-            <p>{{book.introduction}}</p>
-            <h5>{{book.author}}</h5>
-            <hr />
-            {% endfor %}
-        {% else %}
-            <strong>There are no books present.</strong>
-        {% endif %}
+    <div class="col-8" style="border-right: 1px solid #dee2e6;">
+    {% if books %}
+        <h2>TOP5 Books</h2>
+        {% for book in books %}
+        <div class="card mt-3" style="height: 200px; box-shadow: 7px 7px 11px -4px lightgrey;" onmouseover="this.style.backgroundColor = 'rgb(240,240,240)'" onmouseout="this.style.backgroundColor = 'white'">
+            <div class="row">
+                <div class="col-2">
+                    <img src="{{MEDIA_URL}}{{book.image}}" alt="{{book.title}}" style="height:170px; width: 100px; object-fit: contain; margin: 15px;"/>
+                </div>
+                <div class="col-10 p-4">
+                    <h3>{{ book.title }}</h3>
+                    <h5 style="color: grey;">{{book.author}}</h5>
+                    <p style="color: lightgrey;">{{book.introduction}}</p>
+                    <a type="button" class="btn btn-primary" href="{% url 'rango:show_book' book.slug %}">Detail</a>
+                </div>
+            </div>
         </div>
+        {% endfor %}
+    {% else %}
+        <strong>There are no books present.</strong>
+    {% endif %}
+    </div>
 
-        <div>
+    <div class="col-4">
         {% if authors %}
-            <strong>TOP 5 popular authors</strong> 
-            {% for author in authors %}
-             <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
-                <a href="{% url 'rango:show_author_books' author.name %}">{{ author.name }}</a>
-                <h3>view: {{ author.views }}</h3>
-
-            {% endfor %}
-        
-        {% endif %}
-        </div>
-
+        <h2>TOP5 Authors</h2>
+        <table class="table table-hover table-borderless">
+            <tbody>
+                {% for author in authors %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td><a href="{% url 'rango:show_author_books' author.name %}">{{ author.name }}</a></td>
+                    <td>view: {{ author.views }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+         {% endif %}
+    </div>
 {% endblock %}
