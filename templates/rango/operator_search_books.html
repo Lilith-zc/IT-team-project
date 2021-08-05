@@ -8,26 +8,31 @@
 {% block body_block %}
 
     <h1>search result for {{ title }}</h1>
-    {% if books %}
-        <ul>
-        {% for book in books %}
-        <img src="{{MEDIA_URL}}{{book.image}}" alt="{{book.title}}" />
-        <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
-        <a href="{% url 'rango:show_book' book.slug %}">{{ book.title }}</a>
-        <p>{{book.introduction}}</p>
-        <h5>{{book.author}}</h5>
-        <form method="POST" action="{% url 'rango:operator_delete_book' book.slug%}">
-            {% csrf_token %}
-            <input type="hidden" value="{{category.slug}}" name="category" />
-            <input type="submit" value="delete" onclick="myalert()"/>
-        </form>
-        {% endfor %}
+        {% if books %}
+            {% for book in books %}
+            <div class="card mt-3" style="height: 200px; box-shadow: 7px 7px 11px -4px lightgrey;" onmouseover="this.style.backgroundColor = 'rgb(240,240,240)'" onmouseout="this.style.backgroundColor = 'white'">
+                <div class="row">
+                    <div class="col-2">
+                        <img src="{{MEDIA_URL}}{{book.image}}" alt="{{book.title}}" style="height:170px; width: 100px; object-fit: contain; margin: 15px;"/>
+                    </div>
+                    <div class="col-10 p-4">
+                        <h3>{{ book.title }}</h3>
+                        <h5 style="color: grey;">{{book.author}}</h5>
+                        <p style="color: lightgrey;">{{book.introduction}}</p>
+                        <form method="POST" action="{% url 'rango:operator_delete_book' book.slug%}">
+                            {% csrf_token %}
+                            <input type="hidden" value="{{category.slug}}" name="category" />
+                            <input type="submit" value="delete" onclick="myalert()"  class="btn btn-danger" />
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
         </ul>
-    {% else %}
-        <strong>No search result for {{ title }}.</strong><br />
-    {% endif %}
+        {% else %}
+            <strong>No search result for {{ title }}.</strong><br />
+        {% endif %}
 
-{% endblock %}
-        
+{% endblock %}   
         
     

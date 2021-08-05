@@ -6,24 +6,32 @@
 {% endblock %}  
 
 {% block body_block %}
+        
 
         <h1>{{ role }}</h1>
         {% if users %}
-        <ul>
             {% for user in users %}
-                <p>NAME: {{ user.user.username }}</p>
-                <p><img src="{{MEDIA_URL}}{{user.picture}}" alt="{{user.user.username}}" /></p>
-                <p>age: {{  user.age }}</p>
-                <p>gender: {{  user.gender }}</p>
-   
-                <form method="POST" action="{% url 'rango:admin_delete_user' user.user.username %}">
-                    {% csrf_token %}
-                    <input type="submit" value="delete"/>
-                </form>
+            <div class="card mt-3" onmouseover="this.style.backgroundColor = 'rgb(240,240,240)'" onmouseout="this.style.backgroundColor = 'white'">
+                <div class="row">
+                    <div class="col-2">
+                        <img src="{{MEDIA_URL}}{{user.picture}}" alt="{{user.user.username}}" style="height:170px; width: 100px; object-fit: contain; margin: 15px;"/>
+                    </div>
+                    <div class="col-10 p-4">
+                        <h3>NAME: {{ user.user.username }}</h3>
+                        <h5 style="color: grey;">age: {{  user.age }}</h5>
+                        <h5 style="color: grey;">gender: {{  user.gender }}</h5>
+
+                        <form method="POST" action="{% url 'rango:admin_delete_user' user.user.username %}">
+                            {% csrf_token %}
+                            <input type="submit" value="delete" onclick="myalert()" class="btn btn-danger" />
+                        </form>
+
+                    </div>
+                </div>
+            </div>
             {% endfor %}
-        </ul>
         {% else %}
-        <h5>There are no{{ role }}.</h5>
+            <strong>There are no{{ role }}..</strong><br />
         {% endif %}
 
 {% endblock %}

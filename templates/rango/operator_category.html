@@ -12,33 +12,37 @@
 {% block body_block %}
 
     {% if category %}
-        <h1>{{ category.name }}</h1>
-        <a href="{% url 'rango:add_book' category.slug %}">Add a New Book</a>
+        <h2>{{ category.name }}</h2>
         {% if books %}
-            <ul>
             {% for book in books %}
-            <img src="{{MEDIA_URL}}{{book.image}}" alt="{{book.title}}" />
-            <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
-            <h3>{{ book.title }}</h3>
-            <!--<a href="{% url 'rango:show_book' book.slug %}">{{ book.title }}</a>-->
+            <div class="card mt-3" onmouseover="this.style.backgroundColor = 'rgb(240,240,240)'" onmouseout="this.style.backgroundColor = 'white'">
+                <div class="row">
+                    <div class="col-2">
+                        <img src="{{MEDIA_URL}}{{book.image}}" alt="{{book.title}}" style="height:170px; width: 100px; object-fit: contain; margin: 15px;"/>
+                    </div>
+                    <div class="col-10 p-4">
+                        <h3>{{ book.title }}</h3>
+                        <h5 style="color: grey;">{{book.author}}</h5>
+                        <p style="color: lightgrey;">{{book.introduction}}</p>
 
-            <p>{{book.introduction}}</p>
-            <h5>{{book.author}}</h5>
+                        <form method="POST" action="{% url 'rango:operator_delete_book' book.slug%}">
+                            {% csrf_token %}
+                            <input type="hidden" value="{{category.slug}}" name="category" />
+                            <input type="submit" value="delete" onclick="myalert()"  class="btn btn-danger" />
+                        </form>
 
-            <form method="POST" action="{% url 'rango:operator_delete_book' book.slug%}">
-                {% csrf_token %}
-                <input type="hidden" value="{{category.slug}}" name="category" />
-                <input type="submit" value="delete" onclick="myalert()"/>
-            </form>
+                    </div>
+                </div>
+            </div>
             {% endfor %}
-            </ul>
         {% else %}
-            <strong>No pages currently in category.</strong><br />
+            <strong>No book currently in category.</strong><br />
         {% endif %}
+        <a href="{% url 'rango:add_book' category.slug %}" type="button" class="btn btn-primary mt-3">Add a New Book</a>
     {% else %}
         The specified category does not exist!
     {% endif %}
-
+   
 {% endblock %}
 
 

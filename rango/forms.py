@@ -33,7 +33,7 @@ class BookForm(forms.ModelForm):
         return cleaned_data
     
 class UserForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput(attrs={'class':'form-control'}))
+    password = forms.CharField(widget=forms.PasswordInput())
 
     class Meta:
         model = User

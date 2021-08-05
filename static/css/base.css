@@ -1,0 +1,8 @@
+.card mt-3{
+    height: 220px; 
+    box-shadow: 7px 7px 11px -4px lightgrey;
+}
+.container{
+    border: 1px solid #dee2e6; 
+    box-shadow: lightgrey 0px 0px 20px 0px;
+}

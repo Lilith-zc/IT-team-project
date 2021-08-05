@@ -257,7 +257,7 @@ def add_comment(request, book_name_slug):
 
     if request.method == 'POST':
         username = request.session.get('username')
-        score = request.POST.get('score')
+        score = request.POST.get('btnradio')
         content = request.POST.get('content')
 
         user = User.objects.get(username=username)

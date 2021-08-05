@@ -10,7 +10,7 @@
     {% if books %}
         <ul>
         {% for book in books %}
-        <div class="card mt-3" style="height: 200px; box-shadow: 7px 7px 11px -4px lightgrey;" onmouseover="this.style.backgroundColor = 'rgb(240,240,240)'" onmouseout="this.style.backgroundColor = 'white'">
+        <div class="card mt-3" onmouseover="this.style.backgroundColor = 'rgb(240,240,240)'" onmouseout="this.style.backgroundColor = 'white'">
             <div class="row">
                 <div class="col-2">
                     <img src="{{MEDIA_URL}}{{book.image}}" alt="{{book.title}}" style="height:170px; width: 100px; object-fit: contain; margin: 15px;"/>
