@@ -21,6 +21,8 @@ urlpatterns = [
     path('operator/delete_category/<slug:category_name_slug>/',views.operator_delete_category, name ='operator_delete_category'),
     path('operator/delete_book/<slug:book_name_slug>/',views.operator_delete_book, name ='operator_delete_book'),
     path('admin/',views.admin_index,name='admin_index'),
-    path('admin/admin_delete_operator/<slug:operator_name>/',views.admin_delete_operator,name='admin_delete_operator'),
+    path('admin/add_operator',views.add_operator,name='add_operator'),
+    path('admin/admin_modify_user/<slug:role>',views.admin_modify_user,name='admin_modify_user'),
+    path('admin/admin_delete_user/<slug:user_name>/',views.admin_delete_user,name='admin_delete_user'),
     path('search/', views.search, name='search'),
 ]

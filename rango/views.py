@@ -350,12 +350,20 @@ def operator_delete_book(request,book_name_slug):
 
 def admin_index(request):
     context_dict = {}
-    operators = UserProfile.objects.filter(role='OPERATOR')
-    context_dict['operators'] = operators
+    
+    context_dict['operator'] = "OPERATOR"
+    context_dict['user'] = "USER"
     return render(request, 'rango/admin_index.html', context=context_dict)
 
-def admin_delete_operator(request, operator_name):
-    operator = User.objects.get(username=operator_name)
+def admin_modify_user(request, role):
+    context_dict={}
+    users = UserProfile.objects.filter(role = role)
+    context_dict['role'] = role
+    context_dict['users'] = users
+    return render(request, 'rango/admin_modify_user.html', context=context_dict)
+
+def admin_delete_user(request, user_name):
+    operator = User.objects.get(username=user_name)
     operator.delete()
     return redirect(reverse('rango:admin_index'))
 
