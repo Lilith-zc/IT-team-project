@@ -1,4 +1,4 @@
-{% extends 'rango/operator_base.html' %}
+{% extends 'rango/admin_base.html' %}
 {% load staticfiles %}
 
 {% block title_block %}
@@ -7,9 +7,11 @@
 
 {% block body_block %}
 
-        <h1>Admin index page.</h1>
-        <a href="{% url 'rango:admin_add_operator' %}">add {{ operator }}</a>
-        <a href="{% url 'rango:admin_modify_user'  operator  %}">Modify {{ operator }}</a>
-        <a href="{% url 'rango:admin_modify_user'  user  %}">Modify {{ user }}</a>
+        
+<h1>Admin index page.</h1>
+<a href="{% url 'rango:admin_add_operator' %}">ADD {{ operator_style }}</a>
+<a href="{% url 'rango:admin_modify_user'  operator_style  %}">Modify {{ operator_style }}</a>
+<a href="{% url 'rango:admin_modify_user'  user_style  %}">Modify {{ user_style }}</a>
 
 {% endblock %}
+

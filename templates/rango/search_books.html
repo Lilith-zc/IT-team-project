@@ -1,0 +1,28 @@
+{% extends 'rango/base.html' %}
+{% load staticfiles %}
+
+{% block title_block %}
+    search result for {{ title }}
+{% endblock %}    
+
+{% block body_block %}
+
+    <h1>search result for {{ title }}</h1>
+    {% if books %}
+        <ul>
+        {% for book in books %}
+        <img src="{{MEDIA_URL}}{{book.image}}" alt="{{book.title}}" />
+        <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+        <a href="{% url 'rango:show_book' book.slug %}">{{ book.title }}</a>
+        <p>{{book.introduction}}</p>
+        <h5>{{book.author}}</h5>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <strong>No search result for {{ title }}.</strong><br />
+    {% endif %}
+
+{% endblock %}
+        
+        
+    

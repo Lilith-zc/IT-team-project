@@ -1,0 +1,36 @@
+{% extends 'rango/base.html' %}
+{% load staticfiles %}
+
+{% block title_block %}
+    {% if author %}
+        {{ author.name }}
+    {% else %}
+        Unknown Author
+    {% endif %}
+{% endblock %}    
+
+{% block body_block %}
+
+    {% if author %}
+        <h1>{{ author.name }}</h1>
+        {% if books %}
+            <ul>
+            {% for book in books %}
+            <img src="{{MEDIA_URL}}{{book.image}}" alt="{{book.title}}" />
+            <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+            <a href="{% url 'rango:show_book' book.slug %}">{{ book.title }}</a>
+            <p>{{book.introduction}}</p>
+            <h5>{{book.author}}</h5>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <strong>No books wirrten by this author.</strong><br />
+        {% endif %}
+    {% else %}
+        The specified author does not exist!
+    {% endif %}
+
+{% endblock %}
+        
+        
+    

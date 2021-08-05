@@ -1,0 +1,33 @@
+{% extends 'rango/operator_base.html' %}
+{% load staticfiles %}
+
+{% block title_block %}
+    search result for {{ title }}
+{% endblock %}    
+
+{% block body_block %}
+
+    <h1>search result for {{ title }}</h1>
+    {% if books %}
+        <ul>
+        {% for book in books %}
+        <img src="{{MEDIA_URL}}{{book.image}}" alt="{{book.title}}" />
+        <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+        <a href="{% url 'rango:show_book' book.slug %}">{{ book.title }}</a>
+        <p>{{book.introduction}}</p>
+        <h5>{{book.author}}</h5>
+        <form method="POST" action="{% url 'rango:operator_delete_book' book.slug%}">
+            {% csrf_token %}
+            <input type="hidden" value="{{category.slug}}" name="category" />
+            <input type="submit" value="delete" onclick="myalert()"/>
+        </form>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <strong>No search result for {{ title }}.</strong><br />
+    {% endif %}
+
+{% endblock %}
+        
+        
+    

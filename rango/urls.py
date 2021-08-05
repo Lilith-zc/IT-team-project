@@ -21,8 +21,10 @@ urlpatterns = [
     path('operator/delete_category/<slug:category_name_slug>/',views.operator_delete_category, name ='operator_delete_category'),
     path('operator/delete_book/<slug:book_name_slug>/',views.operator_delete_book, name ='operator_delete_book'),
     path('admin/',views.admin_index,name='admin_index'),
-    path('admin/add_operator',views.add_operator,name='add_operator'),
+    path('admin/admin_add_operator',views.admin_add_operator,name='admin_add_operator'),
     path('admin/admin_modify_user/<slug:role>',views.admin_modify_user,name='admin_modify_user'),
     path('admin/admin_delete_user/<slug:user_name>/',views.admin_delete_user,name='admin_delete_user'),
     path('search/', views.search, name='search'),
+    path('category/<slug:category_name_slug>/',views.show_category, name='show_category'),
+    path('author_books/<slug:author_name>/',views.show_author_books, name='show_author_books'),
 ]

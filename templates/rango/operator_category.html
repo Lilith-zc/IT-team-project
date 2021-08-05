@@ -19,7 +19,8 @@
             {% for book in books %}
             <img src="{{MEDIA_URL}}{{book.image}}" alt="{{book.title}}" />
             <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
-            <a href="{% url 'rango:show_book' book.slug %}">{{ book.title }}</a>
+            <h3>{{ book.title }}</h3>
+            <!--<a href="{% url 'rango:show_book' book.slug %}">{{ book.title }}</a>-->
 
             <p>{{book.introduction}}</p>
             <h5>{{book.author}}</h5>

@@ -32,7 +32,8 @@
             <strong>TOP 5 popular authors</strong> 
             {% for author in authors %}
              <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
-                <a href="https://www.baidu.com">{{ author.name }}</a>
+                <a href="{% url 'rango:show_author_books' author.name %}">{{ author.name }}</a>
+                <h3>view: {{ author.views }}</h3>
 
             {% endfor %}
         

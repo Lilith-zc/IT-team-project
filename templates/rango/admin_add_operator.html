@@ -1,0 +1,28 @@
+{% extends 'rango/admin_base.html' %}
+{% load staticfiles %}
+
+{% block title_block %}
+    Add operator
+{% endblock %}
+
+
+{% block body_block %}
+    <h1>Add operator</h1>
+    {% if registered %}
+        Rango says: <strong>Operator added successfully!</strong>
+        <a href="{% url 'rango:admin_index' %}">Return to the homepage.</a><br />
+    {% else %}
+        Rango says: <strong>register here!</strong><br />
+        <div style="width: 200px;">
+        <form id="user_form" method="post" action="{% url 'rango:admin_add_operator' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="mb-3">
+                {{ user_form.as_p }}
+            </div>
+            {{ profile_form.as_p }}
+
+            <input type="submit" name="submit" value="Add operator" />
+        </form>
+        </div>
+    {% endif %}
+{% endblock %}

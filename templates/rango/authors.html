@@ -1,0 +1,19 @@
+<ul> 
+    {% if authors %}
+        {% for a in authors %}
+            {% if a == current_author %}
+                <li> 
+                    <strong>
+                        <a href="{% url 'rango:show_author_books' a.name %}">{{ a.name }}</a>
+                    </strong>
+                </li>
+            {% else %}
+                <li>
+                    <a href="{% url 'rango:show_author_books' a.name %}">{{ a.name }}</a>
+                </li>
+            {% endif %}
+        {% endfor %}
+    {% else %}
+        <li><strong>There are no authors present.</strong></li> 
+    {% endif %}
+</ul>

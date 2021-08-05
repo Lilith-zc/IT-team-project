@@ -11,13 +11,12 @@
             {% endblock %}
         </title>
         <script src="{% static 'javascript/alert.js' %}"></script>
-        <script src="{% static 'javascript/base.js' %}"></script>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     </head>
     <body>
         <!-- select button -->
         <div>
-            <a href="{% url 'rango:operator_index' %}">HOME PAGE</a>
+            <a href="{% url 'rango:admin_index' %}">HOME PAGE</a>
         </div>
 
         <!-- login/register button -->
@@ -28,16 +27,6 @@
             {% endif %}
         </div>
 
-        <div>
-            <form id="search_form" method="get" action="{% url 'rango:search' %}">
-                {% csrf_token %}
-                Title Name: <input type="text" id="search-text" name="title" placeholder="book title" size="50" onkeyup="add_value()" />
-                <input type="submit" value="search" name = "operator_search"/>
-            </form>
-            <div id='search-list' style="z-index: 2; left: 85px; top: 80px; position: absolute; background-color: #fff;">
-                <p><span id='search-result'></span></p>
-            </div>
-        </div>
 
         <div>
             {% block body_block %}

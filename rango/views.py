@@ -215,6 +215,10 @@ def show_book(request, book_name_slug):
     context_dict = {}
     try:
         book = Book.objects.get(slug=book_name_slug)
+        book.views += 1
+        book.author.views += 1
+        book.author.save()
+        book.save()
         context_dict['book'] = book
         try:
             comments = Comment.objects.filter(book=book).order_by('-date')
@@ -349,10 +353,11 @@ def operator_delete_book(request,book_name_slug):
     return redirect(reverse('rango:operator_show_category', kwargs={'category_name_slug': category_name_slug}))
 
 def admin_index(request):
+    print(str(request.session.get('username')))
     context_dict = {}
     
-    context_dict['operator'] = "OPERATOR"
-    context_dict['user'] = "USER"
+    context_dict['operator_style'] = "OPERATOR"
+    context_dict['user_style'] = "USER"
     return render(request, 'rango/admin_index.html', context=context_dict)
 
 def admin_modify_user(request, role):
@@ -368,10 +373,63 @@ def admin_delete_user(request, user_name):
     return redirect(reverse('rango:admin_index'))
 
 def search(request):
-    title = request.GET['title']
-    recontents = Book.objects.filter(title__contains=title)
-
+    title = request.GET.get('title')
+    books = Book.objects.filter(title__contains=title)
+    context_dict={}
+    context_dict['books'] = books
+    context_dict['title'] = title
     rejson = []
-    for recontent in recontents:
-        rejson.append(recontent.title)
-    return HttpResponse(json.dumps(rejson), content_type='application/json')
+    for book in books:
+        rejson.append(book.title)
+
+    if "search" in request.GET:
+        return render(request, 'rango/search_books.html', context=context_dict)
+    elif "operator_search" in request.GET:
+        return render(request, 'rango/operator_search_books.html', context=context_dict)
+    else:
+        return HttpResponse(json.dumps(rejson), content_type='application/json')
+
+
+def admin_add_operator(request):
+    registered = False
+
+    if request.method == 'POST':
+        user_form = UserForm(request.POST)
+        profile_form = UserProfileForm(request.POST)
+
+        if user_form.is_valid() and profile_form.is_valid():
+            user = user_form.save()
+            user.set_password(user.password)
+            user.save()
+
+            profile = profile_form.save(commit=False)
+            profile.role = 'OPERATOR'
+            profile.user = user
+
+            if 'picture' in request.FILES:
+                profile.picture = request.FILES['picture']
+            profile.save()
+            registered = True
+        else:
+            print(user_form.errors, profile_form.errors)
+    else:
+        user_form = UserForm()
+        profile_form = UserProfileForm()
+    return render(request, 'rango/admin_add_operator.html', context={'user_form':user_form,'profile_form':profile_form, 'registered':registered})
+
+def show_author_books(request, author_name):
+    context_dict = {}
+    try:
+        author = Author.objects.get(name=author_name)
+        
+        books = Book.objects.filter(author=author)
+       
+        context_dict['books'] = books
+     
+        context_dict['author'] = author
+    except Category.DoesNotExist:
+       
+        context_dict['category'] = None
+        context_dict['author'] = None
+   
+    return render(request, 'rango/author_books.html', context=context_dict)
