@@ -16,30 +16,6 @@
         <script src="{% static 'plugins/bootstrap-5.0.1-dist/js/bootstrap.bundle.min.js' %}"></script>
         <link rel="stylesheet" href="{% static 'css/base.css' %}">
         <script src="{% static 'javascript/base.js' %}"></script>
-        <script>
-            $(document).ready(function(){
-                $("#search-text").keyup(function(){
-                    var title = $("#search-text").val();                         
-                    $.get("{% url 'rango:search' %}",{'title':title}, function(data){               
-                        for (var i = data.length - 1; i >= 0; i--) {        
-                            //$('#search-result').append(data[i]+'<br/>') 
-                            var result_list = document.getElementById('search-list');
-                            var result = document.createElement("div");
-                            result.innerHTML = '<span>'+ data[i] + '</span>';
-                            result_list.appendChild(result);                           
-                        };
-                    })
-                });
-                $('#search-text').keydown(function(){
-                    $('#search-list').empty();
-                })
-                $('#search-text').blur(function(){
-                    if ($('#search-list').blur){
-                        $('#search-list').empty();
-                    }
-                })
-            });
-        </script>
     </head>
     <body>
         <div class="container">
