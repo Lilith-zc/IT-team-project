@@ -5,6 +5,7 @@
     Homepage
 {% endblock %}  
 
+<!--  the user's home page, show top 5 books and top5 authors,   -->
 {% block body_block %}
     <div class="col-8" id="books">
     {% if books %}
@@ -28,7 +29,7 @@
         <strong>There are no books present.</strong>
     {% endif %}
     </div>
-
+<!--  TOP5 authors   -->
     <div class="col-4">
         {% if authors %}
         <h2>TOP5 Authors</h2>

@@ -7,7 +7,7 @@
 
 {% block body_block %}
 
-        
+        <!-- admin index page , just show three url     -->
 <h1>Admin index page.</h1>
 <a href="{% url 'rango:admin_add_operator' %}">ADD {{ operator_style }}</a>
 <a href="{% url 'rango:admin_modify_user'  operator_style  %}">Modify {{ operator_style }}</a>

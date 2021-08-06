@@ -17,7 +17,9 @@
         <link rel="stylesheet" href="{% static 'css/base.css' %}">
         <script src="{% static 'javascript/base.js' %}"></script>
     </head>
+    <!--   this is the base template af user   -->
     <body>
+        <!--  this is the basic function, have login logout homepage favorite_list(show when login) button.   -->
         <div class="container">
             <div class="row">
                 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -43,7 +45,7 @@
                     </div>
                 </nav>
             </div>
-
+<!--   this is the top bar, show  all categories and authors   -->
             {% block topbar_block %}
             <div class="row m-2">
                 <div id="top_bar">Categories:</div>
@@ -63,7 +65,7 @@
                 {% endblock %}
             </div>
         </div>
-
+<!--  this is used by the search function,show the Optional content. -->
         <div id='search-list' >
             <p><span id='search-result'></span></p>
         </div>

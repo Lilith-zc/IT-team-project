@@ -14,6 +14,7 @@ from django.contrib.auth.decorators import login_required
 from datetime import datetime
 import json
 
+#help function ->get cookie
 def get_server_side_cookie(request, cookie, default_val=None):
     val = request.session.get(cookie)
     if not val:
@@ -24,6 +25,7 @@ def visitor_cookie_handler(request,name):
     #!!!username cookie！！！
     username = str(get_server_side_cookie(request,'username',name))
     request.session['username'] = username
+
 
 def index(request):
     # get all info for index page
@@ -40,13 +42,8 @@ def index(request):
     #return render(request, 'rango/index.html', context=context_dict)
 
 
-def about(request):
-    visitor_cookie_handler(request)
-    context_dict = {'boldmessage': "This tutorial has been put together by <Chi Zhang>.",
-                    'visits':request.session.get('visits'),
-                    }
-    return render(request, 'rango/about.html', context=context_dict)
 
+# show all book in a specific category
 def show_category(request, category_name_slug):
     context_dict = {}
     try:
@@ -85,6 +82,7 @@ def add_category(request):
             # Render the form with error messages (if any).
     return render(request, 'rango/add_category.html', {'form': form})
 
+#add a book in a specific category
 @login_required
 def add_book(request, category_name_slug):
     try:
@@ -95,7 +93,7 @@ def add_book(request, category_name_slug):
 
     if category is None:
         return redirect(reverse('rango:operator_index'))
-    
+    #get info from BookForm
     form = BookForm()
     if request.method == 'POST':
         form = BookForm(request.POST)
@@ -183,6 +181,7 @@ def user_logout(request):
     logout(request)
     return redirect(reverse('rango:index'))
 
+# show book detail 
 def show_book(request, book_name_slug):
     username = request.session.get('username')
     comment_num = 0
@@ -195,6 +194,7 @@ def show_book(request, book_name_slug):
         book.author.save()
         book.save()
         context_dict['book'] = book
+        # get comment from comment table by book 
         try:
             comments = Comment.objects.filter(book=book).order_by('-date')
             for comment in comments:
@@ -210,10 +210,13 @@ def show_book(request, book_name_slug):
             context_dict['comments'] = None
     except Book.DoesNotExist:
         context_dict['book'] = None
-
+# change the favorite button's style!
+# if user had favorite the book, the button should show "remove", if not, show "ADD"
     if username != None:
         user = User.objects.get(username=username)
         datas = LikeList.objects.filter(user=user)
+
+        #change the style by sent style's class as context
         if datas.exists():
             for data in datas:
                 books = data.favoriteBook.all()
@@ -231,6 +234,8 @@ def show_book(request, book_name_slug):
     
     return render(request, 'rango/book.html', context=context_dict)
 
+#can be used when login as user.
+@login_required
 def add_comment(request, book_name_slug):
 
     if request.method == 'POST':
@@ -248,6 +253,9 @@ def add_comment(request, book_name_slug):
 
     return redirect(reverse('rango:show_book', kwargs={'book_name_slug': book_name_slug}))
 
+
+# show user's favorite list page
+@login_required
 def my_favorite(request, username):
     context_dict = {}
     user = User.objects.get(username=username)
@@ -256,6 +264,8 @@ def my_favorite(request, username):
         context_dict['books'] = data.favoriteBook.all()
     return render(request, 'rango/favorite.html', context=context_dict)
 
+#a help functoin to add a book to favorite list 
+@login_required
 def add_favorite(request, book_name_slug):
     if request.method == 'POST':
         username = request.session.get('username')
@@ -278,6 +288,8 @@ def add_favorite(request, book_name_slug):
 
     return redirect(reverse('rango:show_book', kwargs={'book_name_slug': book_name_slug}))
 
+
+#show operator's homepage, just like user homepage,with out some function.
 def operator_index(request):
     # get all info for index page
     category_list = Category.objects.all()
@@ -288,6 +300,7 @@ def operator_index(request):
     return response
     #return render(request, 'rango/index.html', context=context_dict)
 
+#show books in specific category,
 def operator_show_category(request, category_name_slug):
     context_dict = {}
     try:
@@ -305,7 +318,8 @@ def operator_show_category(request, category_name_slug):
    
     return render(request, 'rango/operator_category.html', context=context_dict)
 
-
+#a help function, delet a category.
+#!!!!! if delete a category, all book in this category will be deleted auto!!!
 def operator_delete_category(request,category_name_slug):
     category = Category.objects.get(slug=category_name_slug)
     category.delete()
@@ -316,6 +330,7 @@ def operator_delete_category(request,category_name_slug):
     response = render(request, 'rango/operator_index.html', context=context_dict)
     return response
 
+# a help function, delete a book, search the book by its slug name
 def operator_delete_book(request,book_name_slug):
     book = Book.objects.get(slug=book_name_slug)
     book.delete()
@@ -323,14 +338,15 @@ def operator_delete_book(request,book_name_slug):
         category_name_slug = request.POST.get('category')
     
     return redirect(reverse('rango:operator_show_category', kwargs={'category_name_slug': category_name_slug}))
-
+    
+#admin homepage, send a context contain two string,"USER","OPERATOR". to indentify which url to redirect.
 def admin_index(request):
     context_dict = {}
-    
     context_dict['operator_style'] = "OPERATOR"
     context_dict['user_style'] = "USER"
     return render(request, 'rango/admin_index.html', context=context_dict)
 
+#jump to specfic url, indentify the url by the KEY WORDS post in this functon
 def admin_modify_user(request, role):
     context_dict={}
     users = UserProfile.objects.filter(role = role)
@@ -338,11 +354,12 @@ def admin_modify_user(request, role):
     context_dict['users'] = users
     return render(request, 'rango/admin_modify_user.html', context=context_dict)
 
+# modify user, for now, just delete it.
 def admin_delete_user(request, user_name):
     operator = User.objects.get(username=user_name)
     operator.delete()
     return redirect(reverse('rango:admin_index'))
-
+#a help function, to implement the search function, use Jacascript and AJAX
 def search(request):
     title = request.GET.get('title')
     books = Book.objects.filter(title__contains=title)
@@ -360,7 +377,7 @@ def search(request):
     else:
         return HttpResponse(json.dumps(rejson), content_type='application/json')
 
-
+#admin can add an operator by this function, just like register a user.
 def admin_add_operator(request):
     registered = False
 
@@ -388,6 +405,8 @@ def admin_add_operator(request):
         profile_form = UserProfileForm()
     return render(request, 'rango/admin_add_operator.html', context={'user_form':user_form,'profile_form':profile_form, 'registered':registered})
 
+
+#show books wrote by specific author.
 def show_author_books(request, author_name):
     context_dict = {}
     try:

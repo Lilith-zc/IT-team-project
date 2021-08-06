@@ -4,7 +4,7 @@
 {% block title_block %}
     Operator-Homepage
 {% endblock %}  
-
+<!--  operator homepage, show all category, have a delete button to delete category,   -->
 {% block body_block %}
 
         <h1>Manage Category</h1>
@@ -28,6 +28,7 @@
             {% else %}
                 <li>There are no categories present.</li>
             {% endif %}
+            <!--   a link to add a category  -->
             <a href="{% url 'rango:add_category' %}" type="button" class="btn btn-primary">Add a New Category</a>
         </div>
 
