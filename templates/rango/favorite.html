@@ -10,15 +10,15 @@
     {% if books %}
         <ul>
         {% for book in books %}
-        <div class="card mt-3" onmouseover="this.style.backgroundColor = 'rgb(240,240,240)'" onmouseout="this.style.backgroundColor = 'white'">
+        <div class="card mt-3" id="card" onmouseover="this.style.backgroundColor = 'rgb(240,240,240)'" onmouseout="this.style.backgroundColor = 'white'">
             <div class="row">
                 <div class="col-2">
-                    <img src="{{MEDIA_URL}}{{book.image}}" alt="{{book.title}}" style="height:170px; width: 100px; object-fit: contain; margin: 15px;"/>
+                    <img src="{{MEDIA_URL}}{{book.image}}" alt="{{book.title}}" id="image"/>
                 </div>
                 <div class="col-10 p-4">
                     <h3>{{ book.title }}</h3>
-                    <h5 style="color: grey;">{{book.author}}</h5>
-                    <p style="color: lightgrey;">{{book.introduction}}</p>
+                    <h5 id="info1">{{book.author}}</h5>
+                    <p id="info2">{{book.introduction}}</p>
                     <a type="button" class="btn btn-primary" href="{% url 'rango:show_book' book.slug %}">Detail</a>
                 </div>
             </div>

@@ -11,15 +11,15 @@
         <h1>{{ role }}</h1>
         {% if users %}
             {% for user in users %}
-            <div class="card mt-3" onmouseover="this.style.backgroundColor = 'rgb(240,240,240)'" onmouseout="this.style.backgroundColor = 'white'">
+            <div class="card mt-3" id="card" onmouseover="this.style.backgroundColor = 'rgb(240,240,240)'" onmouseout="this.style.backgroundColor = 'white'">
                 <div class="row">
                     <div class="col-2">
-                        <img src="{{MEDIA_URL}}{{user.picture}}" alt="{{user.user.username}}" style="height:170px; width: 100px; object-fit: contain; margin: 15px;"/>
+                        <img src="{{MEDIA_URL}}{{user.picture}}" alt="{{user.user.username}}" id="image"/>
                     </div>
                     <div class="col-10 p-4">
                         <h3>NAME: {{ user.user.username }}</h3>
-                        <h5 style="color: grey;">age: {{  user.age }}</h5>
-                        <h5 style="color: grey;">gender: {{  user.gender }}</h5>
+                        <h5 id="info1">age: {{  user.age }}</h5>
+                        <h5 id="info1">gender: {{  user.gender }}</h5>
 
                         <form method="POST" action="{% url 'rango:admin_delete_user' user.user.username %}">
                             {% csrf_token %}

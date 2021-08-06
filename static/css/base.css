@@ -1,8 +1,62 @@
-.card mt-3{
+#card{
     height: 220px; 
     box-shadow: 7px 7px 11px -4px lightgrey;
 }
-.container{
+#book{
+    height: 500px; 
+    box-shadow: 0px 0px 9px 1px lightgrey inset; 
+    overflow: auto;
+}
+#books{
+    border-right: 1px solid #dee2e6;
+}
+#book_title{
+    display: inline;
+}
+#book_image{
+    height:170px; 
+    width: 100px; 
+    object-fit: contain; 
+    margin: 25px;
+}
+#image{
+    height:170px; 
+    width: 100px; 
+    object-fit: contain; 
+    margin: 15px;
+}
+#info1{
+    color: grey;
+}
+#info2{
+    color: lightgrey;
+}
+#top_bar{
+    float: left;
+}
+#favorite{
+    float: right;
+}
+#score {
+    display: inline;
+    color: grey;
+}
+#author{
+    color: rgb(80,80,80);
+}
+#navbar{
     border: 1px solid #dee2e6; 
     box-shadow: lightgrey 0px 0px 20px 0px;
+}
+#body_block{
+    margin: 20px 4px 20px 4px;
+}
+#search-form{
+    width: 50%;
+}
+#search-list{
+    z-index: 2; left: 500px; top: 60px; position: absolute; background-color: #fff;
+}
+#operator-search-list{
+    z-index: 2; left: 500px; top: 60px; position: absolute; background-color: #fff;
 }

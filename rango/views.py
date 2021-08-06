@@ -26,8 +26,6 @@ def visitor_cookie_handler(request,name):
     request.session['username'] = username
 
 def index(request):
-    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-    print(str(request.session.get('username')))
     # get all info for index page
     category_list = Category.objects.all()
     book_list = Book.objects.order_by('-views')[:5]
@@ -119,28 +117,6 @@ def add_book(request, category_name_slug):
             print(form.errors)
     context_dict = {'form':form, 'category': category}
 
-    '''
-    if request.method == 'POST':
-        title = request.POST.get('title')
-        url = request.POST.get('url')
-        introduction = request.POST.get('introduction')
-        image = request.POST.get('image')
-        author_name = request.POST.get('author_name')
-        author = Author.objects.get_or_create(name = author_name)[0]
-        author.save()
-        print("==========================")
-        print(author.name)
-        book = Book.objects.get_or_create(title=title,category=category,author=author)[0]
-        book.url = url
-        book.image = image
-        book.introduction = introduction
-        book.save()
-        return redirect(reverse('rango:operator_show_category', kwargs={'category_name_slug': category_name_slug}))
-    
-
-    context_dict = {'category': category}
-    '''
-
     return render(request, 'rango/add_book.html', context=context_dict)
 
 def register(request):
@@ -171,7 +147,6 @@ def register(request):
 
 
 def user_login(request):
-    print(request)
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -244,12 +219,15 @@ def show_book(request, book_name_slug):
                 books = data.favoriteBook.all()
                 for every_book in books:
                     if every_book.title == book.title:
-                        context_dict['button_style'] = 'Remove from my favorite'
+                        context_dict['button_content'] = 'Remove from my favorite'
+                        context_dict['button_style'] = 'btn btn-success'
                         return render(request, 'rango/book.html', context=context_dict)
-                context_dict['button_style'] = 'Add to my favorite'
+                context_dict['button_content'] = 'Add to my favorite'
+                context_dict['button_style'] = 'btn btn-outline-success'
                 return render(request, 'rango/book.html', context=context_dict)
         else:
-            context_dict['button_style'] = 'Add to my favorite'
+            context_dict['button_content'] = 'Add to my favorite'
+            context_dict['button_style'] = 'btn btn-outline-success'
     
     return render(request, 'rango/book.html', context=context_dict)
 
@@ -276,8 +254,6 @@ def my_favorite(request, username):
     datas = LikeList.objects.filter(user=user)
     for data in datas:
         context_dict['books'] = data.favoriteBook.all()
-        print("=======================")
-        print(data)
     return render(request, 'rango/favorite.html', context=context_dict)
 
 def add_favorite(request, book_name_slug):
@@ -303,8 +279,6 @@ def add_favorite(request, book_name_slug):
     return redirect(reverse('rango:show_book', kwargs={'book_name_slug': book_name_slug}))
 
 def operator_index(request):
-    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-    print(str(request.session.get('username')))
     # get all info for index page
     category_list = Category.objects.all()
     context_dict = {}
@@ -351,7 +325,6 @@ def operator_delete_book(request,book_name_slug):
     return redirect(reverse('rango:operator_show_category', kwargs={'category_name_slug': category_name_slug}))
 
 def admin_index(request):
-    print(str(request.session.get('username')))
     context_dict = {}
     
     context_dict['operator_style'] = "OPERATOR"
