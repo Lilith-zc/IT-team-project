@@ -1,17 +1,12 @@
-from re import L
-from django import urls
-from django.contrib import auth
 from django.contrib.auth.models import User
 from django.shortcuts import render
 from django.http import HttpResponse
-from django.template.defaultfilters import title
 from rango.models import Author, Category,Book, Comment, LikeList, UserProfile
 from rango.forms import CategoryForm,UserForm, UserProfileForm,BookForm
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from datetime import datetime
 import json
 
 #help function ->get cookie
@@ -39,7 +34,6 @@ def index(request):
     
     response = render(request, 'rango/index.html', context=context_dict)
     return response
-    #return render(request, 'rango/index.html', context=context_dict)
 
 
 
@@ -290,6 +284,7 @@ def add_favorite(request, book_name_slug):
 
 
 #show operator's homepage, just like user homepage,with out some function.
+@login_required
 def operator_index(request):
     # get all info for index page
     category_list = Category.objects.all()
@@ -298,9 +293,9 @@ def operator_index(request):
     
     response = render(request, 'rango/operator_index.html', context=context_dict)
     return response
-    #return render(request, 'rango/index.html', context=context_dict)
 
 #show books in specific category,
+@login_required
 def operator_show_category(request, category_name_slug):
     context_dict = {}
     try:
@@ -320,6 +315,7 @@ def operator_show_category(request, category_name_slug):
 
 #a help function, delet a category.
 #!!!!! if delete a category, all book in this category will be deleted auto!!!
+@login_required
 def operator_delete_category(request,category_name_slug):
     category = Category.objects.get(slug=category_name_slug)
     category.delete()
@@ -331,6 +327,7 @@ def operator_delete_category(request,category_name_slug):
     return response
 
 # a help function, delete a book, search the book by its slug name
+@login_required
 def operator_delete_book(request,book_name_slug):
     book = Book.objects.get(slug=book_name_slug)
     book.delete()
@@ -340,6 +337,7 @@ def operator_delete_book(request,book_name_slug):
     return redirect(reverse('rango:operator_show_category', kwargs={'category_name_slug': category_name_slug}))
     
 #admin homepage, send a context contain two string,"USER","OPERATOR". to indentify which url to redirect.
+@login_required
 def admin_index(request):
     context_dict = {}
     context_dict['operator_style'] = "OPERATOR"
@@ -347,6 +345,7 @@ def admin_index(request):
     return render(request, 'rango/admin_index.html', context=context_dict)
 
 #jump to specfic url, indentify the url by the KEY WORDS post in this functon
+@login_required
 def admin_modify_user(request, role):
     context_dict={}
     users = UserProfile.objects.filter(role = role)
@@ -355,10 +354,12 @@ def admin_modify_user(request, role):
     return render(request, 'rango/admin_modify_user.html', context=context_dict)
 
 # modify user, for now, just delete it.
+@login_required
 def admin_delete_user(request, user_name):
     operator = User.objects.get(username=user_name)
     operator.delete()
     return redirect(reverse('rango:admin_index'))
+
 #a help function, to implement the search function, use Jacascript and AJAX
 def search(request):
     title = request.GET.get('title')
@@ -378,6 +379,7 @@ def search(request):
         return HttpResponse(json.dumps(rejson), content_type='application/json')
 
 #admin can add an operator by this function, just like register a user.
+@login_required
 def admin_add_operator(request):
     registered = False
 

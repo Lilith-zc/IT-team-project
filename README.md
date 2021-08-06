@@ -1,0 +1,3 @@
+1. After adding data using population_script.py, a total of six accounts, three categories and eight books will be created in the system. “user1”, “user2”, and “user3” are users. “operator1” and “operator2” are operators. “admin” is an administrator. Each of the six accounts has the same username and password. Each user has three books in their favorites. There are three comments under each book.
+2. The browser may fail to load the CSS due to a cache problem. If this problem occurs, press Ctrl+F5 to resolve it.
+3. Considering that the project may be running in an unconnected environment, we downloaded bootstrap, jQuery and other libraries to the local. As a result, the percentage of programming languages displayed on the GitHub repository is inaccurate.
